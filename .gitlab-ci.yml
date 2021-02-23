@@ -1,0 +1,22 @@
+image: node:16
+
+stages:
+  - run_renovate
+
+.cache: &cache
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules
+
+run-renovate:
+  stage: run_renovate
+  <<: *cache
+  script:
+    - npm install
+    - npm run renovate
+  only:
+    - master
+    - schedules

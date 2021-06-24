@@ -41,7 +41,7 @@ workflows:
   run-renovate:
     jobs:
       - run-renovate:
-          context: aws_svc_circleci
+          context: renovate-bot
           filters:
             branches:
               only: master
@@ -56,4 +56,4 @@ workflows:
                 - master
     jobs:
       - run-renovate:
-          context: aws_svc_circleci
+          context: renovate-bot

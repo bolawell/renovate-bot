@@ -2,6 +2,8 @@ module.exports = {
   platform: "github",
   gitAuthor: "renovate-bot <renovate-bot@eana.ro>",
   dryRun: true,
+  token: process.env.RENOVATE_TOKEN,
+
   repositories: ["eana/renovate-bot"],
 
   requireConfig: true,

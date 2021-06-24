@@ -21,9 +21,8 @@ commands:
           name: Install renovate
           command: |
             export NPM_CONFIG_PREFIX=${CIRCLE_WORKING_DIRECTORY}/node_modules
-            npm install -g npm@latest --verbose
-            npm install --verbose
-            npm audit fix --force --verbose
+            npm install -g npm@latest
+            npm install
       - save_cache:
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:

@@ -48,7 +48,8 @@ workflows:
   work-days:
     triggers:
       - schedule:
-          cron: "0 0 * * *"
+          # Monday to Friday, every hour between 9-16
+          cron: "0 9-16 * * 1-5"
           filters:
             branches:
               only:

@@ -46,7 +46,7 @@ workflows:
           filters:
             branches:
               only: master
-  work-days:
+  run-renovate-on-schedule:
     triggers:
       - schedule:
           # Monday to Friday, every hour between 9-16
@@ -58,3 +58,6 @@ workflows:
     jobs:
       - run-renovate:
           context: renovate-bot
+          filters:
+            branches:
+              only: master

@@ -7,6 +7,10 @@
 * [Token](#token)
 * [Renovate bot configuration](#renovate-bot-configuration)
 * [Preset config](#preset-config)
+* [Signed commits](#signed-commits)
+    * [Generating a GPG key](#generating-a-gpg-key)
+    * [Add the public GPG to GitHub`](#add-the-public-gpg-to-github)
+    * [Add the private GPG key to `renovate-bot`](#add-the-private-gpg-key-to-renovate-bot)
 * [Using CircleCI](#using-circleci)
 * [Final words](#final-words)
 
@@ -64,7 +68,7 @@ document the file should look like this:
 ```js
 module.exports = {
   platform: "github",
-  gitAuthor: "renovate-bot <renovate-bot@eana.ro>",
+  gitAuthor: "Renovate Bot <renovate-bot@eana.ro>",
   token: process.env.RENOVATE_TOKEN,
 
   repositories: ["acme/test1", "acme/test2", "acme/test3", "acme/test4"],
@@ -94,17 +98,61 @@ having to copy/paste it to every repository individually. The preset config is
 configured in the [renovate-config](https://github.com/eana/renovate-config)
 repository.
 
+## Signed commits
+
+Why sign git commits? As useful as signing packages and ISOs is, an even more
+important use of GPG signing is in signing Git commits. When you sign a Git
+commit, you can prove that the code you submitted came from you and wasn't
+altered while you were transferring it. You also can prove that you submitted
+the code and not someone else.
+
+For a commit to be verified by GitHub the following things are required:
+
+- The committer must have a GPG public/private key pair.
+- The committer's public key must have been uploaded to their GitHub account.
+- One of the emails in the GPG key must match a **verified** email address used
+  by the committer in GitHub.
+- The committer's email address must match the verified email address from the
+  GPG key.
+
+### Generating a GPG key
+
+If you don't already have the GPG keys this
+[document](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/generating-a-new-gpg-key)
+will help you get started. Use `Renovate bot` for `Real name` and
+`renovate@eana.ro` for `Email address`. Also the key should not expire.
+
+A very **important** note is that you need set an
+empty passphrase.
+
+### Add the public GPG to GitHub`
+
+After generating the GPG keys, the public key must be added to GitHub and this
+[guide](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/adding-a-new-gpg-key-to-your-github-account)
+could be followed to add it.
+
+### Add the private GPG key to `renovate-bot`
+
+We need to export, `base64` encode the key and add it as an environment
+variable.
+
+```bash
+gpg --output private.pgp --armor --export-secret-key <GPG key ID>
+base64 private.pgp | sed ':a;N;$!ba;s/\n//g' > private64.pgp
+```
+
 ## Using CircleCI
 
 Create a [CircleCI
 context](https://circleci.com/docs/2.0/contexts/#creating-and-using-a-context)
 called `renovate-bot` and add three environment variables as follows:
 
-| Environment variable | Value               |
-| -------------------- | ------------------- |
-| `RENOVATE_TOKEN`     | The generated token |
-| `GITHUB_COM_TOKEN`   | The generated token |
-| `LOG_LEVEL`          | `debug`             |
+| Environment variable | Value                              |
+| -------------------- | ---------------------------------- |
+| `RENOVATE_TOKEN`     | The generated token                |
+| `GITHUB_COM_TOKEN`   | The generated token                |
+| `LOG_LEVEL`          | `debug`                            |
+| `RENOVATE_BOT_GPG`   | The content of the `private64.pgp` |
 
 This token is only used by Renovate, see the [token
 configuration](https://docs.renovatebot.com/self-hosted-configuration/#token),
@@ -122,9 +170,9 @@ reliable info on updated dependencies.
 
 The [pipeline](./circleci/config.yml) is very simple and it is configured to
 run [from Monday to Friday, every hour between
-9-16](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L51-L52).
+9-16](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L63-L64).
 The pipeline is triggered when a change is [pushed/merged to
-master](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L60-L62).
+master](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L72-L74).
 
 ## Final words
 

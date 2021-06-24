@@ -20,6 +20,16 @@ commands:
       - run:
           name: Install renovate
           command: |
+            echo "Configure gpg..."
+            mkdir -p ~/.gnupg/
+            echo $RENOVATE_BOT_GPG | base64 --decode > ~/.gnupg/private.key
+            gpg --import ~/.gnupg/private.key
+            echo "Set git config for commiter email and username..."
+            git config --global user.email "renovate-bot@eana.ro"
+            git config --global user.name "Renovate Bot"
+            git config --global commit.gpgsign true
+            git config --global user.signingkey renovate-bot@eana.ro
+            echo "Install renovate-bot..."
             export NPM_CONFIG_PREFIX=${CIRCLE_WORKING_DIRECTORY}/node_modules
             npm install -g npm@latest
             npm install
@@ -35,7 +45,9 @@ jobs:
       - setup_env
       - run:
           name: Run renovate
-          command: npm run renovate -- --dry-run true
+          command: |
+            echo "Run renovate-bot..."
+            npm run renovate -- --dry-run true
 
 workflows:
   version: 2

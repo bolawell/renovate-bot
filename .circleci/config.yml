@@ -41,6 +41,7 @@ commands:
 jobs:
   run-renovate:
     executor: node
+    resource_class: small
     steps:
       - setup_env
       - run:

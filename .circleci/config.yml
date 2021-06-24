@@ -47,7 +47,7 @@ jobs:
           name: Run renovate
           command: |
             echo "Run renovate-bot..."
-            npm run renovate -- --dry-run true
+            npm run renovate
 
 workflows:
   version: 2

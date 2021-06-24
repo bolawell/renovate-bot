@@ -1,15 +1,14 @@
 module.exports = {
-  platform: "gitlab",
-  endpoint: "https://gitlab.example.org/api/v4/",
-  token: process.env.RENOVATE_TOKEN,
-
-  repositories: ["acme/test1", "acme/test2"],
+  platform: "github",
+  gitAuthor: "renovate-bot <renovate-bot@eana.ro>",
+  dryRun: true,
+  repositories: ["eana/renovate-bot"],
 
   requireConfig: true,
   onboarding: true,
 
   onboardingConfig: {
     $schema: "https://docs.renovatebot.com/renovate-schema.json",
-    extends: ["local>eana/renovate-config"],
+    extends: ["github>eana/renovate-config"],
   },
 };

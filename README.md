@@ -59,19 +59,19 @@ directly. This is important, because when you give away the password the
 account can be hijacked, but when you only give away a token you have control
 over the actions that can be performed with that token.
 
-To create such a token, follow the instructions in the [GitLab
-docs](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html). In
-short:
+[Generate a personal access token](https://github.com/settings/tokens), with
+the `repo:public_repo` scope for only public repositories or the `repo` scope
+for public and private repositories, and add it to _Secrets_ (repository
+settings) as `RENOVATE_TOKEN`. You can also create a token without a specific
+scope, which gives read-only access to public repositories, for testing. This
+token is only used by Renovate, see the [token
+configuration](https://docs.renovatebot.com/self-hosted-configuration/#token),
+and gives it access to the repositories. The name of the secret can be anything
+as long as it matches the argument given to the `token` option.
 
-- Go to the 'Settings > Access Tokens' page
-- Enter 'Renovate' as the 'Name'
-- Choose the `api` scope
-- Click the 'Create personal access token' button
-- Save the generated token somewhere until we need it later
-
-Finally, make sure that the new GitLab account has access to the projects that
-we want it to run on. It will need to have at least 'Developer' permissions so
-that the bot is able to create branches and push updates to those branches.
+Note that the
+[`GITHUB_TOKEN`](https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token#permissions-for-the-github_token)
+secret can't be used for authenticating Renovate.
 
 ## Renovate bot configuration
 

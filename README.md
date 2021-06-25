@@ -169,8 +169,8 @@ will lead to Renovate closing and reopening PRs because it could not get
 reliable info on updated dependencies.
 
 The [pipeline](./circleci/config.yml) is very simple and it is configured to
-run [from Monday to Friday, every hour between
-9-16](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L63-L64).
+run [from Monday to Friday, at 9:00, 12:00,
+15:00](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L63-L64).
 The pipeline is triggered when a change is [pushed/merged to
 master](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L72-L74).
 

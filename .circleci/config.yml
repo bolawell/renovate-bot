@@ -62,8 +62,8 @@ workflows:
   run-renovate-on-schedule:
     triggers:
       - schedule:
-          # Monday to Friday, every hour between 9-16
-          cron: "0 9-16 * * 1-5"
+          # Monday to Friday, at 9:00, 12:00, 15:00
+          cron: "0 9,12,15 * * 1-5"
           filters:
             branches:
               only:

@@ -1,7 +1,8 @@
 module.exports = {
   platform: "github",
   gitAuthor: "Renovate Bot <renovate-bot@eana.ro>",
-  token: process.env.RENOVATE_TOKEN,
+  token: process.env.GITHUB_COM_TOKEN,
+  gitPrivateKey: process.env.GPG_KEY,
 
   repositories: [
     "bolawell/test-repo",

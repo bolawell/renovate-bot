@@ -5,6 +5,7 @@ executors:
   node:
     docker:
       - image: cimg/node:16.4.0
+        user: circleci
 
 commands:
   setup_env:
@@ -20,10 +21,6 @@ commands:
       - run:
           name: Install renovate
           command: |
-            echo "Configure gpg..."
-            mkdir -p ~/.gnupg/
-            echo $RENOVATE_BOT_GPG | base64 --decode > ~/.gnupg/private.key
-            gpg --import ~/.gnupg/private.key
             echo "Set git config for commiter email and username..."
             git config --global user.email "renovate-bot@eana.ro"
             git config --global user.name "Renovate Bot"
@@ -31,7 +28,6 @@ commands:
             git config --global user.signingkey renovate-bot@eana.ro
             echo "Install renovate-bot..."
             export NPM_CONFIG_PREFIX=${CIRCLE_WORKING_DIRECTORY}/node_modules
-            npm install -g npm@latest
             npm install
       - save_cache:
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
@@ -47,6 +43,8 @@ jobs:
       - run:
           name: Run renovate
           command: |
+            echo "Configure gpg..."
+            export GPG_KEY=$(echo "${GPG_KEY_BASE64}" | base64 --decode)
             echo "Run renovate-bot..."
             npm run renovate
 

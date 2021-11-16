@@ -69,7 +69,8 @@ document the file should look like this:
 module.exports = {
   platform: "github",
   gitAuthor: "Renovate Bot <renovate-bot@eana.ro>",
-  token: process.env.RENOVATE_TOKEN,
+  token: process.env.GITHUB_COM_TOKEN,
+  gitPrivateKey: process.env.GPG_KEY,
 
   repositories: ["acme/test1", "acme/test2", "acme/test3", "acme/test4"],
 
@@ -78,7 +79,7 @@ module.exports = {
 
   onboardingConfig: {
     $schema: "https://docs.renovatebot.com/renovate-schema.json",
-    extends: ["github>eana/renovate-config"],
+    extends: ["github>bolawell/renovate-config"],
   },
 };
 ```
@@ -120,10 +121,9 @@ For a commit to be verified by GitHub the following things are required:
 If you don't already have the GPG keys this
 [document](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/generating-a-new-gpg-key)
 will help you get started. Use `Renovate bot` for `Real name` and
-`renovate@eana.ro` for `Email address`. Also the key should not expire.
+`renovate-bot@eana.ro` for `Email address`. Also the key should not expire.
 
-A very **important** note is that you need set an
-empty passphrase.
+A very **important** note is that you need set an empty passphrase.
 
 ### Add the public GPG to GitHub`
 
@@ -149,18 +149,16 @@ called `renovate-bot` and add three environment variables as follows:
 
 | Environment variable | Value                              |
 | -------------------- | ---------------------------------- |
-| `RENOVATE_TOKEN`     | The generated token                |
 | `GITHUB_COM_TOKEN`   | The generated token                |
+| `GPG_KEY_BASE64`     | The content of the `private64.pgp` |
 | `LOG_LEVEL`          | `debug`                            |
-| `RENOVATE_BOT_GPG`   | The content of the `private64.pgp` |
 
 This token is only used by Renovate, see the [token
 configuration](https://docs.renovatebot.com/self-hosted-configuration/#token),
 and gives it access to the repositories.
 
-It's important to also configure the environment variable `GITHUB_COM_TOKEN`
-containing a personal access token for `github.com`. It's used when fetching
-release notes for repositories in order to increase the hourly API limit.
+The environment variable `GITHUB_COM_TOKEN` is used when fetching release notes
+for repositories in order to increase the hourly API limit.
 
 When using Renovate in a project where dependencies are loaded from
 `github.com` (such as Go modules hosted on GitHub) it is highly recommended to
@@ -169,8 +167,8 @@ will lead to Renovate closing and reopening PRs because it could not get
 reliable info on updated dependencies.
 
 The [pipeline](./circleci/config.yml) is very simple and it is configured to
-run [from Monday to Friday, at 9:00, 12:00,
-15:00](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L63-L64).
+run [Monday to Friday, at 9:00, 12:00,
+15:00](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L65-L66).
 The pipeline is triggered when a change is [pushed/merged to
 master](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L72-L74).
 

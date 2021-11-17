@@ -1,11 +1,12 @@
 module.exports = {
   platform: "github",
-  gitAuthor: "Renovate Bot <renovate-bot@eana.ro>",
+  gitAuthor: "Eana Bot <eana-bot@eana.ro>",
   token: process.env.GITHUB_COM_TOKEN,
   gitPrivateKey: process.env.GPG_KEY,
 
   repositories: [
-    "bolawell/test-repo",
+    "bolawell/renovate-bot",
+    "bolawell/test-repo"
   ],
 
   requireConfig: true,

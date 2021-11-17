@@ -9,6 +9,6 @@
     "renovate": "renovate"
   },
   "dependencies": {
-    "renovate": "29.4.2"
+    "renovate": "29.10.0"
   }
 }

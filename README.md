@@ -10,7 +10,7 @@
 * [Signed commits](#signed-commits)
     * [Generating a GPG key](#generating-a-gpg-key)
     * [Add the public GPG to GitHub`](#add-the-public-gpg-to-github)
-    * [Add the private GPG key to `renovate-bot`](#add-the-private-gpg-key-to-renovate-bot)
+    * [Add the private GPG key to `eana-bot`](#add-the-private-gpg-key-to-eana-bot)
 * [Using CircleCI](#using-circleci)
 * [Final words](#final-words)
 
@@ -68,7 +68,7 @@ document the file should look like this:
 ```js
 module.exports = {
   platform: "github",
-  gitAuthor: "Renovate Bot <renovate-bot@eana.ro>",
+  gitAuthor: "Eana Bot <eana-bot@eana.ro>",
   token: process.env.GITHUB_COM_TOKEN,
   gitPrivateKey: process.env.GPG_KEY,
 
@@ -120,8 +120,8 @@ For a commit to be verified by GitHub the following things are required:
 
 If you don't already have the GPG keys this
 [document](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/generating-a-new-gpg-key)
-will help you get started. Use `Renovate bot` for `Real name` and
-`renovate-bot@eana.ro` for `Email address`. Also the key should not expire.
+will help you get started. Use `Eana bot` for `Real name` and
+`eana-bot@eana.ro` for `Email address`. Also the key should not expire.
 
 A very **important** note is that you need set an empty passphrase.
 
@@ -131,14 +131,21 @@ After generating the GPG keys, the public key must be added to GitHub and this
 [guide](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/adding-a-new-gpg-key-to-your-github-account)
 could be followed to add it.
 
-### Add the private GPG key to `renovate-bot`
+### Add the private GPG key to `eana-bot`
 
 We need to export, `base64` encode the key and add it as an environment
 variable.
 
+On Linux:
+
 ```bash
-gpg --output private.pgp --armor --export-secret-key <GPG key ID>
-base64 private.pgp | sed ':a;N;$!ba;s/\n//g' > private64.pgp
+gpg --armor --export-secret-key eana-bot@eana.ro | base64 | sed ':a;N;$!ba;s/\n//g' | xclip -sel clip
+```
+
+On Mac:
+
+```bash
+gpg --armor --export-secret-key eana-bot@eana.ro | base64 | sed ':a;N;$!ba;s/\n//g' | pbcopy
 ```
 
 ## Using CircleCI
@@ -147,11 +154,11 @@ Create a [CircleCI
 context](https://circleci.com/docs/2.0/contexts/#creating-and-using-a-context)
 called `renovate-bot` and add three environment variables as follows:
 
-| Environment variable | Value                              |
-| -------------------- | ---------------------------------- |
-| `GITHUB_COM_TOKEN`   | The generated token                |
-| `GPG_KEY_BASE64`     | The content of the `private64.pgp` |
-| `LOG_LEVEL`          | `debug`                            |
+| Environment variable | Value                                                    |
+| -------------------- | -------------------------------------------------------- |
+| `GITHUB_COM_TOKEN`   | The generated token                                      |
+| `GPG_KEY_BASE64`     | The base64 encoded private key you have in the clipboard |
+| `LOG_LEVEL`          | `debug`                                                  |
 
 This token is only used by Renovate, see the [token
 configuration](https://docs.renovatebot.com/self-hosted-configuration/#token),

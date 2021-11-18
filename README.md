@@ -1,4 +1,4 @@
-# renovatebot
+# renovate-bot
 
 <!-- vim-markdown-toc GFM -->
 
@@ -173,11 +173,10 @@ add a token as the rate limit from the github.com API will be reached, which
 will lead to Renovate closing and reopening PRs because it could not get
 reliable info on updated dependencies.
 
-The [pipeline](./circleci/config.yml) is very simple and it is configured to
-run [Monday to Friday, at 9:00, 12:00,
-15:00](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L65-L66).
-The pipeline is triggered when a change is [pushed/merged to
-master](https://github.com/eana/renovate-bot/blob/master/.circleci/config.yml#L72-L74).
+The [pipeline](.circleci/config.yml) is very simple and it is configured to run
+[Monday to Friday, at 9:00, 12:00, 15:00](.circleci/config.yml#L65-L66). Also,
+the pipeline is triggered when a change is [pushed/merged to
+master](.circleci/config.yml#L59-L61).
 
 ## Final words
 

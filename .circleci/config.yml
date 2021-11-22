@@ -1,52 +1,18 @@
 ---
 version: 2.1
 
-executors:
-  node:
-    docker:
-      - image: cimg/node:17.1.0
-        user: circleci
-
-commands:
-  setup_env:
-    steps:
-      - checkout
-      - restore_cache:
-          # When lock file changes, use increasingly general patterns to
-          # restore cache
-          keys:
-            - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
-            - node-v1-{{ .Branch }}-
-            - node-v1-
-      - run:
-          name: Install renovate
-          command: |
-            echo "Set git config for commiter email and username..."
-            git config --global user.email "eana-bot@eana.ro"
-            git config --global user.name "Eana Bot"
-            git config --global commit.gpgsign true
-            git config --global user.signingkey eana-bot@eana.ro
-            echo "Install renovate-bot..."
-            export NPM_CONFIG_PREFIX=${CIRCLE_WORKING_DIRECTORY}/node_modules
-            npm install
-      - save_cache:
-          key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
-
 jobs:
   run-renovate:
-    executor: node
+    docker:
+      - image: renovate/renovate:29.17.4
     resource_class: small
     steps:
-      - setup_env
+      - checkout
       - run:
           name: Run renovate
           command: |
-            echo "Configure gpg..."
             export GPG_KEY=$(echo "${GPG_KEY_BASE64}" | base64 --decode)
-            echo "Run renovate-bot..."
-            npm run renovate
+            renovate
 
 workflows:
   version: 2

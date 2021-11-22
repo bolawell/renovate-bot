@@ -150,7 +150,7 @@ gpg --armor --export-secret-key eana-bot@eana.ro | base64 | sed ':a;N;$!ba;s/\n/
 
 ## Using CircleCI
 
-Create a [CircleCI
+zCreate a [CircleCI
 context](https://circleci.com/docs/2.0/contexts/#creating-and-using-a-context)
 called `renovate-bot` and add three environment variables as follows:
 

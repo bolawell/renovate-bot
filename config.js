@@ -14,8 +14,9 @@ module.exports = {
   ],
 
   repositories: [
+    "bolawell/ccc",
     "bolawell/renovate-bot",
-    "bolawell/test-repo"
+    "bolawell/test-repo",
   ],
 
   requireConfig: true,

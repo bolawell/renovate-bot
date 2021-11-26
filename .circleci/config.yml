@@ -26,14 +26,9 @@ workflows:
             branches:
               only: master
   run-renovate-on-schedule:
-    triggers:
-      - schedule:
-          # Monday to Friday, at 9:00, 12:00, 15:00
-          cron: "0 9,12,15 * * 1-5"
-          filters:
-            branches:
-              only:
-                - master
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - run-renovate:
           context:

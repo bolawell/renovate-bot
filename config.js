@@ -15,6 +15,7 @@ module.exports = {
 
   repositories: [
     "bolawell/ccc",
+    "bolawell/eana-nas",
     "bolawell/renovate-bot",
     "bolawell/test-repo",
   ],

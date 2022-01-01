@@ -14,6 +14,7 @@ module.exports = {
   ],
 
   repositories: [
+    "bolawell/blog.eana.ro",
     "bolawell/ccc",
     "bolawell/eana-nas",
     "bolawell/renovate-bot",

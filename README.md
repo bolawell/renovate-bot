@@ -8,12 +8,12 @@
 * [Renovate bot configuration](#renovate-bot-configuration)
 * [Preset config](#preset-config)
 * [Signed commits](#signed-commits)
-    * [Generating a GPG key](#generating-a-gpg-key)
-    * [Add the public GPG to GitHub`](#add-the-public-gpg-to-github)
-    * [Add the private GPG key to `eana-bot`](#add-the-private-gpg-key-to-eana-bot)
+	* [Generating a GPG key](#generating-a-gpg-key)
+	* [Add the public GPG to GitHub`](#add-the-public-gpg-to-github)
+	* [Add the private GPG key to `eana-bot`](#add-the-private-gpg-key-to-eana-bot)
 * [Using CircleCI](#using-circleci)
-    * [The pipeline](#the-pipeline)
-    * [Scheduled triggers](#scheduled-triggers)
+	* [The pipeline](#the-pipeline)
+	* [Scheduled triggers](#scheduled-triggers)
 * [Final words](#final-words)
 
 <!-- vim-markdown-toc -->
@@ -206,8 +206,7 @@ this work we will use [scheduled pipelines].
 The pipeline can be scheduled by using `scheduled triggers`. At the moment of
 writing this document there are two ways to create the triggers.
 
-- the scheduled triggers can now also be managed [via the UI, in the project
-  settings under the "Triggers" section]
+- the scheduled triggers can now also be managed [via the UI, in the project settings under the "Triggers" section]
 - using the [CircleCI API]
 
 To create a new scheduled trigger using the API a [API token] is required.
@@ -225,7 +224,7 @@ curl --location --request POST 'https://circleci.com/api/v2/project/gh/bolawell/
         },
         "timetable": {
             "per-hour": 1,
-            "hours-of-day": [9,12, 15],
+            "hours-of-day": [9, 12, 15],
             "days-of-week": ["MON", "TUE", "WED", "THU", "FRI"]
         }
     }'
@@ -235,7 +234,7 @@ The API call above create a scheduled trigger named `run-renovate-on-schedule`,
 owned by the current user (`eana`), against the `master` branch on `Monday to
 Friday, at 9:00, 12:00, 15:00`
 
-[via the ui, in the project settings under the "triggers"section]: https://app.circleci.com/settings/project/github/bolawell/renovate-bot/triggers
+[via the ui, in the project settings under the "triggers" section]: https://app.circleci.com/settings/project/github/bolawell/renovate-bot/triggers
 [circleci api]: https://github.com/CircleCI-Public/api-preview-docs
 [api token]: https://circleci.com/docs/2.0/managing-api-tokens
 

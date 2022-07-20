@@ -19,6 +19,7 @@ module.exports = {
     "bolawell/eana-nas",
     "bolawell/eana.ro",
     "bolawell/renovate-bot",
+    "bolawell/renovate-config",
     "bolawell/sysadmin.compxtreme.ro",
     "bolawell/test-repo",
   ],

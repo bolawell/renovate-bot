@@ -2,19 +2,20 @@
 
 <!-- vim-markdown-toc GFM -->
 
-* [Overview](#overview)
-* [Renovate](#renovate)
-* [Token](#token)
-* [Renovate bot configuration](#renovate-bot-configuration)
-* [Preset config](#preset-config)
-* [Signed commits](#signed-commits)
-	* [Generating a GPG key](#generating-a-gpg-key)
-	* [Add the public GPG to GitHub`](#add-the-public-gpg-to-github)
-	* [Add the private GPG key to `eana-bot`](#add-the-private-gpg-key-to-eana-bot)
-* [Using CircleCI](#using-circleci)
-	* [The pipeline](#the-pipeline)
-	* [Scheduled triggers](#scheduled-triggers)
-* [Final words](#final-words)
+- [Overview](#overview)
+- [Renovate](#renovate)
+- [Token](#token)
+- [Renovate bot configuration](#renovate-bot-configuration)
+- [Scan new repositories](#scan-new-repositories)
+- [Preset config](#preset-config)
+- [Signed commits](#signed-commits)
+  - [Generating a GPG key](#generating-a-gpg-key)
+  - [Add the public GPG to GitHub`](#add-the-public-gpg-to-github)
+  - [Add the private GPG key to `eana-bot`](#add-the-private-gpg-key-to-eana-bot)
+- [Using CircleCI](#using-circleci)
+  - [The pipeline](#the-pipeline)
+  - [Scheduled triggers](#scheduled-triggers)
+- [Final words](#final-words)
 
 <!-- vim-markdown-toc -->
 
@@ -67,12 +68,9 @@ and add write it down for later use.
 
 ## Renovate bot configuration
 
-Renovate expects this to be called [`config.js`]. Inside it we will configure
-how Renovate will behave by default. Please note that most of this can be
-overridden on a per-repository basis.
-
-The `config.js` file may change in the future, but at the time of writing this
-document the file should look like this:
+By default, renovate expects this to be called `config.js`. Inside this file we
+will configure how Renovate will behave by default. Please note that most of
+this can be overridden on a per-repository basis.
 
 ```js
 module.exports = {
@@ -81,7 +79,14 @@ module.exports = {
   token: process.env.GITHUB_COM_TOKEN,
   gitPrivateKey: process.env.GPG_KEY,
 
-  repositories: ["acme/test1", "acme/test2", "acme/test3", "acme/test4"],
+  hostRules: [
+    {
+      hostType: "ecr",
+      matchHost: "/d+.dkr.ecr.[-a-z0-9]+.amazonaws.com/",
+      awsAccessKeyID: process.env.AWS_ACCESS_KEY_ID,
+      awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+  ],
 
   requireConfig: true,
   onboarding: true,
@@ -91,14 +96,88 @@ module.exports = {
     extends: ["github>bolawell/renovate-config"],
   },
 };
+
+const fs = require("fs");
+if (fs.existsSync("renovate-repos.json")) {
+  if (
+    !"CIRCLE_NODE_INDEX" in process.env ||
+    !"CIRCLE_NODE_TOTAL" in process.env
+  ) {
+    console.log(
+      "renovate-repos.json exists, but CIRCLE_NODE_INDEX and CIRCLE_NODE_TOTAL are not set. See https://circleci.com/docs/parallelism-faster-jobs"
+    );
+    process.exit(1);
+  }
+
+  segmentNumber = Number(process.env.CIRCLE_NODE_INDEX); // CIRCLE_NODE_INDEX is 1 indexed
+  segmentTotal = Number(process.env.CIRCLE_NODE_TOTAL);
+  allRepositories = JSON.parse(fs.readFileSync("renovate-repos.json"));
+  allSize = allRepositories.length;
+  chunkSize = parseInt(allSize / segmentTotal);
+  chunkStartIndex = chunkSize * (segmentNumber - 1);
+  chunkEndIndex = chunkSize * segmentNumber;
+
+  if (chunkEndIndex > allSize) {
+    chunkEndIndex = allSize;
+  }
+
+  segmentNumber = Number(process.env.CIRCLE_NODE_INDEX); // CIRCLE_NODE_INDEX is 1 indexed
+  segmentTotal = Number(process.env.CIRCLE_NODE_TOTAL);
+  allRepositories = JSON.parse(fs.readFileSync("renovate-repos.json"));
+  repositories = allRepositories.filter(
+    (_, i) => segmentNumber - 1 === i % segmentTotal
+  );
+  module.exports.repositories = repositories;
+  module.exports.autodiscover = false;
+  console.log(
+    `renovate-repos.json contains ${allRepositories.length} repositories. This is chunk number ${segmentNumber} of ${segmentTotal} total chunks. Processing ${repositories.length} repositories.`
+  );
+
+  console.log(`Repositories to be scanned:`);
+  console.log(repositories);
+}
 ```
 
-The first section of the file above tells our Renovate bot how to talk to
-GitHub. Afterwards on which repositories it should run and what the
-`renovate.json` config file should look like that it will add to each
-repository in the first merge request.
+The first section of the file above tells our Renovate bot how to talk to our
+self-hosted GitLab instance and the private key to use to sign the git commits.
+Afterwards on which repositories it should run and what the `renovate.json`
+config file should look like that it will add to each repository in the first
+merge request.
 
-[`config.js`]: ./config.js
+To optimize the pipeline and reduce the running time, we need to scan multiple
+repositories in parallel. We do this by defining `parallelism: x` in
+[config.yml]. In the second part of the renovate config
+file, we split the [renovate-repos.json] file in `x`
+chunks. When the pipeline is triggered `x` jobs will be created, each job
+scanning their particular chunk of repositories.
+
+_Please note that at the moment of writing this document `x = 3`._
+
+[config.yml](./.circleci/config.yml)
+[renovate-repos.json](./renovate-repos.json)
+
+## Scan new repositories
+
+To scan new repositories with renovate we need to add the desired repositories
+to the [renovate-repos.json](./renovate-repos.json) file. There should be
+only one repository (including the full path) per line, between double-quotes
+and the line should end with a comma.
+
+```
+[
+  "acme/repo1",
+  "acme/group/repo",
+  "acme/another-group/another-repo"
+]
+```
+
+Make sure the repositories are sorted alphabetically (this is how you sort the
+lines in [IntelliJ](https://www.jetbrains.com/webstorm/guide/tips/sort-lines/),
+[vscode](https://thechrisgreen.com/2021/08/vs-code-sort-lines-of-code-in-ascending-or-descending-order/),
+[vim]()) and there are no duplicates (this is how you remove duplicates in
+[IntelliJ](https://www.jetbrains.com/help/idea/find-and-replace-code-duplicates.html),
+[vscode](https://stackoverflow.com/a/45829605),
+[vim](https://stackoverflow.com/a/351182)).
 
 ## Preset config
 
@@ -231,8 +310,7 @@ curl --location --request POST 'https://circleci.com/api/v2/project/gh/bolawell/
 ```
 
 The API call above create a scheduled trigger named `run-renovate-on-schedule`,
-owned by the current user (`eana`), against the `master` branch on `Monday to
-Friday, at 9:00, 12:00, 15:00`
+owned by the current user (`eana`), against the `master` branch on `Monday to Friday, at 9:00, 12:00, 15:00`
 
 [via the ui, in the project settings under the "triggers" section]: https://app.circleci.com/settings/project/github/bolawell/renovate-bot/triggers
 [circleci api]: https://github.com/CircleCI-Public/api-preview-docs

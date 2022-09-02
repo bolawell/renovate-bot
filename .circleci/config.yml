@@ -4,7 +4,7 @@ version: 2.1
 jobs:
   run-renovate:
     docker:
-      - image: renovate/renovate:32.186.2
+      - image: renovate/renovate:32.188.0
     resource_class: small
     steps:
       - checkout

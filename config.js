@@ -22,6 +22,7 @@ module.exports = {
     "bolawell/renovate-config",
     "bolawell/sysadmin.compxtreme.ro",
     "bolawell/test-repo",
+    "bolawell/wireguard",
   ],
 
   requireConfig: true,

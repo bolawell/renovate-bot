@@ -1,19 +1,41 @@
 ---
 version: 2.1
 
-jobs:
-  run-renovate:
+executors:
+  node:
     docker:
-      - image: renovate/renovate:34.29.2
-    resource_class: small
-    parallelism: 3
+      - image: cimg/node:19.1.0
+
+commands:
+  setup_env:
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - node-v1-{{ .Branch }}-
+            - node-v1-
+      - run:
+          name: Install renovate
+          command: |
+            npm install --verbose
+      - save_cache:
+          key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+
+jobs:
+  run-renovate:
+    executor: node
+    resource_class: small
+    parallelism: 5
+    steps:
+      - setup_env
       - run:
           name: Run renovate
           command: |
             export GPG_KEY=$(echo "${GPG_KEY_BASE64}" | base64 --decode)
-            renovate
+            npm run renovate
 
 workflows:
   version: 2

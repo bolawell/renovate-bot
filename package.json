@@ -1,0 +1,11 @@
+{
+  "name": "renovate-bot",
+  "private": true,
+  "scripts": {
+    "renovate": "renovate"
+  },
+  "dependencies": {
+    "npm": "9.1.2",
+    "renovate": "34.29.2"
+  }
+}

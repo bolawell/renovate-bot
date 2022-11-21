@@ -6,5 +6,6 @@
   "bolawell/renovate-bot",
   "bolawell/renovate-config",
   "bolawell/sysadmin.compxtreme.ro",
-  "bolawell/test-repo"
+  "bolawell/test-repo",
+  "bolawell/wireguard"
 ]

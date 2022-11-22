@@ -45,9 +45,9 @@ workflows:
           context:
             - aws_svc_renovate
             - renovate-bot
-  #          filters:
-  #            branches:
-  #              only: master
+          filters:
+            branches:
+              only: master
   run-renovate-on-schedule:
     when:
       and:

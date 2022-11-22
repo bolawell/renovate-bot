@@ -10,7 +10,7 @@
 - [Preset config](#preset-config)
 - [Signed commits](#signed-commits)
   - [Generating a GPG key](#generating-a-gpg-key)
-  - [Add the public GPG to GitHub`](#add-the-public-gpg-to-github)
+  - [Add the public GPG to GitHub](#add-the-public-gpg-to-github)
   - [Add the private GPG key to `eana-bot`](#add-the-private-gpg-key-to-eana-bot)
 - [Using CircleCI](#using-circleci)
   - [The pipeline](#the-pipeline)
@@ -47,6 +47,40 @@ is, but it is not and the rest of this document will show you how to do it.
 Renovate will use the [eana-bot] user to open merge requests. It will also have
 a dedicated [repository] for the main configuration. The CircleCI config on
 this repository will take care of regularly running the Renovate bot.
+
+Renovate is a JavaScript-based project, but it supports updating dependencies
+of a lot of other languages too. Because it is based on JavaScript we will use
+`npm` (or `yarn` if you prefer) to install it and for that the first file we
+will create is the `package.json` file.
+
+```json
+{
+  "name": "renovate-bot",
+  "private": true,
+  "scripts": {
+    "renovate": "renovate"
+  },
+  "dependencies": {
+    "npm": "9.1.2",
+    "renovate": "34.29.2"
+  }
+}
+```
+
+Afterwards, run `npm install` in the repository to install the renovate package
+into the `node_modules` folder. This step should also create a
+`package-lock.json` file which needs to be committed to the repository together
+with the new `package.json` file.
+
+```bash
+$ docker run -it --rm -v $(pwd):/data cimg/node:19.1.0 bash
+$ cd /data
+$ npm install --verbose
+$ exit
+```
+
+Note: The `node_modules` should not be checked in the git repository and hence
+should be added to `.gitignore`.
 
 [github]: https://github.com
 [gitlab]: https://about.gitlab.com
@@ -216,7 +250,7 @@ A very **important** note is that you need set an empty passphrase.
 
 [document]: https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/generating-a-new-gpg-key
 
-### Add the public GPG to GitHub`
+### Add the public GPG to GitHub
 
 After generating the GPG keys, the public key must be added to GitHub and this
 [guide] could be followed to add it.

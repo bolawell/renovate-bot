@@ -13,18 +13,6 @@ module.exports = {
     },
   ],
 
-  repositories: [
-    "bolawell/blog.eana.ro",
-    "bolawell/ccc",
-    "bolawell/eana-nas",
-    "bolawell/eana.ro",
-    "bolawell/renovate-bot",
-    "bolawell/renovate-config",
-    "bolawell/sysadmin.compxtreme.ro",
-    "bolawell/test-repo",
-    "bolawell/wireguard",
-  ],
-
   requireConfig: true,
   onboarding: true,
 
@@ -33,3 +21,43 @@ module.exports = {
     extends: ["github>bolawell/renovate-config"],
   },
 };
+
+const fs = require("fs");
+if (fs.existsSync("renovate-repos.json")) {
+  if (
+    !"CIRCLE_NODE_INDEX" in process.env ||
+    !"CIRCLE_NODE_TOTAL" in process.env
+  ) {
+    console.log(
+      "renovate-repos.json exists, but CIRCLE_NODE_INDEX and CIRCLE_NODE_TOTAL are not set. See https://circleci.com/docs/parallelism-faster-jobs"
+    );
+    process.exit(1);
+  }
+
+  segmentNumber = Number(process.env.CIRCLE_NODE_INDEX); // CIRCLE_NODE_INDEX is 1 indexed
+  segmentTotal = Number(process.env.CIRCLE_NODE_TOTAL);
+  allRepositories = JSON.parse(fs.readFileSync("renovate-repos.json"));
+  allSize = allRepositories.length;
+  chunkSize = parseInt(allSize / segmentTotal);
+  chunkStartIndex = chunkSize * segmentNumber;
+  chunkEndIndex = chunkSize * segmentNumber;
+
+  if (chunkEndIndex > allSize) {
+    chunkEndIndex = allSize;
+  }
+
+  segmentNumber = Number(process.env.CIRCLE_NODE_INDEX); // CIRCLE_NODE_INDEX is 1 indexed
+  segmentTotal = Number(process.env.CIRCLE_NODE_TOTAL);
+  allRepositories = JSON.parse(fs.readFileSync("renovate-repos.json"));
+  repositories = allRepositories.filter(
+    (_, i) => segmentNumber === i % segmentTotal
+  );
+  module.exports.repositories = repositories;
+  module.exports.autodiscover = false;
+  console.log(
+    `renovate-repos.json contains ${allRepositories.length} repositories. This is chunk number ${segmentNumber} of ${segmentTotal} total chunks. Processing ${repositories.length} repositories.`
+  );
+
+  console.log(`Repositories to be scanned:`);
+  console.log(repositories);
+}

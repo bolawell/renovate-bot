@@ -187,13 +187,13 @@ scanning their particular chunk of repositories.
 
 _Please note that at the moment of writing this document `x = 3`._
 
-[config.yml](./.circleci/config.yml)
-[renovate-repos.json](./renovate-repos.json)
+[config.yml]: ./.circleci/config.yml
+[renovate-repos.json]: ./renovate-repos.json
 
 ## Scan new repositories
 
 To scan new repositories with renovate we need to add the desired repositories
-to the [renovate-repos.json](./renovate-repos.json) file. There should be
+to the [renovate-repos.json] file. There should be
 only one repository (including the full path) per line, between double-quotes
 and the line should end with a comma.
 
@@ -208,7 +208,8 @@ and the line should end with a comma.
 Make sure the repositories are sorted alphabetically (this is how you sort the
 lines in [IntelliJ](https://www.jetbrains.com/webstorm/guide/tips/sort-lines/),
 [vscode](https://thechrisgreen.com/2021/08/vs-code-sort-lines-of-code-in-ascending-or-descending-order/),
-[vim]()) and there are no duplicates (this is how you remove duplicates in
+[vim](https://webdevetc.com/blog/sort-text-in-vim/)) and there are no
+duplicates (this is how you remove duplicates in
 [IntelliJ](https://www.jetbrains.com/help/idea/find-and-replace-code-duplicates.html),
 [vscode](https://stackoverflow.com/a/45829605),
 [vim](https://stackoverflow.com/a/351182)).

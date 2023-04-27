@@ -14,6 +14,8 @@
   - [Add the private GPG key to `eana-bot`](#add-the-private-gpg-key-to-eana-bot)
 - [Using CircleCI](#using-circleci)
   - [The pipeline](#the-pipeline)
+  - [Automerge](#automerge)
+  - [Reviewers](#reviewers)
   - [Scheduled triggers](#scheduled-triggers)
 - [Final words](#final-words)
 
@@ -315,12 +317,31 @@ this work we will use [scheduled pipelines].
 [renovate-bot]: https://app.circleci.com/settings/organization/github/bolawell/contexts/324bdfb6-36a8-436e-8e11-6e99edc6c08a
 [scheduled pipelines]: https://discuss.circleci.com/t/scheduled-pipelines-are-here/41684
 
+### Automerge
+
+Automerging is a Renovate feature that you can use to automate upgrading
+dependencies. When enabled, Renovate tries to merge the proposed update once
+the tests pass. Renovate tries platform-native automerge only when it initially
+creates the PR. Any PR that is being updated will be automerged with the
+Renovate-based automerge.
+
+### Reviewers
+
+When `automerge` is enabled on a PR, Renovate will _not_ add assignees or
+reviewers at PR creation time, in order to decrease notifications noise a
+little. If tests subsequently _fail_, making `automerge` not possible, then
+Renovate will add the configured assignees and/or reviewers.
+
+Note: Renovate won't add assignees and reviewers to a PR with failing checks if
+the PR already has assignees or reviewers present.
+
 ### Scheduled triggers
 
 The pipeline can be scheduled by using `scheduled triggers`. At the moment of
 writing this document there are two ways to create the triggers.
 
-- the scheduled triggers can now also be managed [via the UI, in the project settings under the "Triggers" section]
+- the scheduled triggers can now also be managed [via the UI, in the project
+  settings under the "Triggers" section]
 - using the [CircleCI API]
 
 To create a new scheduled trigger using the API a [API token] is required.

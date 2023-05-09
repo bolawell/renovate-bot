@@ -35,7 +35,7 @@ jobs:
           name: Run renovate
           command: |
             export GPG_KEY=$(echo "${GPG_KEY_BASE64}" | base64 --decode)
-            [ $CIRCLE_BRANCH = "master" ] && npm run renovate || npm run renovate -- --dry-run
+            [ "${CIRCLE_BRANCH}" != "master" ] || [ "${CIRCLE_PULL_REQUEST##*/}" != "" ] && npm run renovate -- --dry-run || npm run renovate
 
 workflows:
   version: 2

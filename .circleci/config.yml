@@ -5,6 +5,7 @@ executors:
   node:
     docker:
       - image: cimg/node:20.4.0
+        user: root
 
 commands:
   setup_env:
@@ -19,6 +20,12 @@ commands:
           name: Install renovate
           command: |
             npm install --verbose
+      - run:
+          name: Install and run redis
+          command: |
+            apt update
+            apt install --yes redis
+            redis-server --daemonize yes
       - save_cache:
           key: node-v2-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
@@ -36,6 +43,8 @@ jobs:
           command: |
             export GPG_KEY=$(echo "${GPG_KEY_BASE64}" | base64 --decode)
             [ "${CIRCLE_BRANCH}" != "master" ] || [ "${CIRCLE_PULL_REQUEST##*/}" != "" ] && npm run renovate -- --dry-run || npm run renovate
+          environment:
+            RENOVATE_REDIS_URL: redis://127.0.0.1:6379/0
 
 workflows:
   version: 2

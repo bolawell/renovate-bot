@@ -6,6 +6,6 @@
   },
   "dependencies": {
     "npm": "9.8.1",
-    "renovate": "36.29.2"
+    "renovate": "36.31.0"
   }
 }

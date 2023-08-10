@@ -7,5 +7,6 @@
   "bolawell/renovate-config",
   "bolawell/sysadmin.compxtreme.ro",
   "bolawell/test-repo",
-  "bolawell/wireguard"
+  "bolawell/wireguard",
+  "eana/github-org"
 ]

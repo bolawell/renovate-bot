@@ -1,6 +1,7 @@
 # renovate-bot
 
-<!-- vim-markdown-toc GFM -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Overview](#overview)
 - [Renovate](#renovate)
@@ -19,7 +20,7 @@
   - [Scheduled triggers](#scheduled-triggers)
 - [Final words](#final-words)
 
-<!-- vim-markdown-toc -->
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Overview
 
@@ -140,7 +141,7 @@ if (fs.existsSync("renovate-repos.json")) {
     !"CIRCLE_NODE_TOTAL" in process.env
   ) {
     console.log(
-      "renovate-repos.json exists, but CIRCLE_NODE_INDEX and CIRCLE_NODE_TOTAL are not set. See https://circleci.com/docs/parallelism-faster-jobs"
+      "renovate-repos.json exists, but CIRCLE_NODE_INDEX and CIRCLE_NODE_TOTAL are not set. See https://circleci.com/docs/parallelism-faster-jobs",
     );
     process.exit(1);
   }
@@ -161,12 +162,12 @@ if (fs.existsSync("renovate-repos.json")) {
   segmentTotal = Number(process.env.CIRCLE_NODE_TOTAL);
   allRepositories = JSON.parse(fs.readFileSync("renovate-repos.json"));
   repositories = allRepositories.filter(
-    (_, i) => segmentNumber - 1 === i % segmentTotal
+    (_, i) => segmentNumber - 1 === i % segmentTotal,
   );
   module.exports.repositories = repositories;
   module.exports.autodiscover = false;
   console.log(
-    `renovate-repos.json contains ${allRepositories.length} repositories. This is chunk number ${segmentNumber} of ${segmentTotal} total chunks. Processing ${repositories.length} repositories.`
+    `renovate-repos.json contains ${allRepositories.length} repositories. This is chunk number ${segmentNumber} of ${segmentTotal} total chunks. Processing ${repositories.length} repositories.`,
   );
 
   console.log(`Repositories to be scanned:`);

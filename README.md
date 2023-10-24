@@ -18,6 +18,7 @@
   - [Automerge](#automerge)
   - [Reviewers](#reviewers)
   - [Scheduled triggers](#scheduled-triggers)
+- [Caching](#caching)
 - [Final words](#final-words)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -372,6 +373,32 @@ owned by the current user (`eana`), against the `master` branch on `Monday to Fr
 [via the ui, in the project settings under the "triggers" section]: https://app.circleci.com/settings/project/github/bolawell/renovate-bot/triggers
 [circleci api]: https://github.com/CircleCI-Public/api-preview-docs
 [api token]: https://circleci.com/docs/2.0/managing-api-tokens
+
+## Caching
+
+By default, renovate caches lookup results, including dependency versions and
+release notes between repositories and runs on the local file system. However,
+since multiple jobs run in parallel, caching on the local file system is
+suboptimal and underutilized. Therefore, I have decided to use a small redis
+instance as the global cache instead.
+
+To start, head over to https://redislabs.com/ and sign up and once you create
+and verify your account, click "Create your subscription". Scroll down to
+"Fixed size" and pick the free option. Click "Create". We now need to create
+the database under the subscription. User `renovate-bot` as the database name.
+Be sure to copy "Redis Password" and save it to the password manager. Once you
+are ready, click "Activate". Navigate to "Data access control" and then create
+a new Role and User.
+
+To use the redis instance, add the `RENOVATE_REDIS_URL` environment variable
+following the same steps as described [above](#using-circleci). In the
+'Environment Variable Name' field, enter `RENOVATE_REDIS_URL` and
+`redis://username:password@redis-endpoint` as the 'Value'.
+
+Replace:
+
+- `username` and `password` with user and password created above
+- `redis-endpoint` with the public endpoint available in the database details
 
 ## Final words
 

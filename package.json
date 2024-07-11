@@ -5,8 +5,8 @@
     "renovate": "renovate"
   },
   "dependencies": {
-    "npm": "10.8.1",
+    "npm": "10.8.2",
     "re2": "1.21.3",
-    "renovate": "37.427.0"
+    "renovate": "37.428.2"
   }
 }

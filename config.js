@@ -7,9 +7,8 @@ module.exports = {
   hostRules: [
     {
       hostType: "ecr",
-      matchHost: "/d+.dkr.ecr.[-a-z0-9]+.amazonaws.com/",
-      awsAccessKeyID: process.env.AWS_ACCESS_KEY_ID,
-      awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      username: process.env.AWS_ACCESS_KEY_ID,
+      password: process.env.AWS_SECRET_ACCESS_KEY,
     },
   ],
 
@@ -25,8 +24,8 @@ module.exports = {
 const fs = require("fs");
 if (fs.existsSync("renovate-repos.json")) {
   if (
-    !"CIRCLE_NODE_INDEX" in process.env ||
-    !"CIRCLE_NODE_TOTAL" in process.env
+    (!"CIRCLE_NODE_INDEX") in process.env ||
+    (!"CIRCLE_NODE_TOTAL") in process.env
   ) {
     console.log(
       "renovate-repos.json exists, but CIRCLE_NODE_INDEX and CIRCLE_NODE_TOTAL are not set. See https://circleci.com/docs/parallelism-faster-jobs",

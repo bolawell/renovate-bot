@@ -12,6 +12,12 @@ module.exports = {
     },
   ],
 
+  allowedPostUpgradeCommands: [
+    "^pre-commit install$",
+    // prettier-ignore
+    "^pre-commit run --files \$\(git ls-files --modified\) \|\| true$",
+  ],
+
   requireConfig: true,
   onboarding: true,
 

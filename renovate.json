@@ -5,7 +5,7 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["cimg/node"],
-      "allowedVersions": "/^20\\.\\d+\\.\\d+?$/"
+      "allowedVersions": "/^22\\.\\d+\\.\\d+?$/"
     }
   ]
 }

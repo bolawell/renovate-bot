@@ -4,7 +4,7 @@ version: 2.1
 jobs:
   run-renovate:
     docker:
-      - image: renovate/renovate:43.11.1-full
+      - image: renovate/renovate:43.15.3-full
     working_directory: ~/project
     resource_class: small
     parallelism: 5

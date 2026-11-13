@@ -7,6 +7,6 @@
   "dependencies": {
     "npm": "12.2.2",
     "re2": "1.27.1",
-    "renovate": "44.237.3"
+    "renovate": "44.238.1"
   }
 }
